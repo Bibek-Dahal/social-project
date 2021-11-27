@@ -1,0 +1,69 @@
+{% extends 'myapp/base.html'%}
+{% load static%}
+
+{% block title%}find friends{% endblock%}
+{% block nav%}
+
+{% endblock nav%}
+
+
+{% block container%}
+ {%if friends%}
+    <h1>Find Friends</h1>
+
+    
+    {% for frn in friends%}
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="row">
+                    
+                        <div class="col-sm-3 ">
+                            <img src="{% static 'images/member-1.png'%}" class="rounded-circle mx-3 mt-3" width="60" height="60" alt="...">
+                        </div>
+                        <div class="col-sm mt-3">
+                            <p>{{frn.username}} </p>
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <div class="col">
+                            <form  name={{frn.id}} onsubmit="myfun('{{frn.id}}')" class='' >
+                                {% csrf_token %}
+                                <a > <input class = " offset-1 btn btn-primary mb-2" type="submit" value = 'add friend' id={{frn.id}} name='sub_btn'  ></a>
+                            </form>
+            
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+            
+        </div>
+        <br>
+    {% endfor %}
+    
+    {% if condition%}
+        <button><a href="{%url 'find_friends' %}">More</a></button>
+        {%else%}
+            <p></p>
+    
+    {% endif%}
+    {%else%}
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="col-6 ">
+            <h1>Sorry we didnt find any matching result</h1>
+        </div>
+    </div>
+        
+ 
+ {%endif%}
+
+
+    
+{% endblock container%}
+
+{% block javascript%}
+    <script src="{% static 'js/find_friends.js'%}"></script>
+{% endblock%}
+

@@ -1,0 +1,20 @@
+{% extends 'myapp/base.html'%}
+
+
+{% block nav%}
+
+{% endblock nav%}
+
+
+{% block container%}
+<h1>find friends</h1>
+{% for frn in friends%}
+    <form action="{%url 'add_friend' frn.id %}">
+        {{frn.user}} <input type="submit" value = 'Add Friend'>
+        <br>
+        <br>
+    </form>
+       
+{%endfor%}
+{% endblock container%}
+

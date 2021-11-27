@@ -1,0 +1,195 @@
+{% extends 'myapp/base.html'%}
+{% load static%}
+
+{% block container%}
+{{user_name | json_script:"sender"}}
+{{receiver | json_script:"receiver"}}
+{{room_name | json_script:"room_name"}}
+
+
+{%for x in msg%}
+    
+    <p>{{x.sender}}</p>
+    <p>{{x.receiver}}</p>
+    <p>{{x.message}}</p>
+    
+
+{%endfor%}
+
+
+<div class="row">
+    <div class="col-sm-6">
+        {% for x in friends%}
+           <button><li id="{{x}}" onclick="chatFun('{{x}}')" >{{x}}</li></button>
+        {% endfor%}
+
+    </div>
+</div>
+
+                {%for x in msg%}
+                <div class="card-body msg_card_body">
+                    <div class="d-flex justify-content-start mb-4 " id="msgCon">
+                        <div class="img_cont_msg">
+                            
+                        </div>
+                       
+                        <div class="msg_cotainer">
+                            {{x.message}}
+                            <span class="msg_time">{{x.created_at}}, Today</span>
+                        </div>
+                    </div>
+                   
+                   
+                </div>
+                {%endfor%}
+                
+                
+                    <form onsubmit="subform()"> 
+                        {% csrf_token%}
+                        <div class="input-group">
+                            <div class="input-group-append">
+                                <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
+                            </div>
+                            <input type="text" id="msg" name="messaage" class="form-control type_msg" placeholder="Type your message..."></textarea>
+                            <div class="input-group-append">
+                                <span class="input-group-text send_btn"><button type="submit"> submit</button></span>
+                            </div>
+                        </div>
+                    </form>
+  
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                  This is some text within a card body.
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                  This is some text within a card body.
+                </div>
+            </div>
+              
+        </div>
+        <div class="col-6">
+            {%for x in msg%}
+                {%if False %}
+                    <div class="row justify-content-end ">
+                        <div class="col-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    hello i am bibeks
+                                    {{sender.username}}
+                                    {{user_name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%else%}
+                        <div class="row justify-content-start ">
+                            <div class="row mt-3">
+                                <div class="col-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            {{x.message}}
+                                            {{x.created_at}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                {%endif%}
+                    
+                    
+            {%endfor%}
+
+            
+            
+        </div>
+    </div>
+</div>
+{% endblock container%}
+
+{% block javascript%}
+    <script>
+        console.log('{{sender}}')
+        
+        let sender = JSON.parse($('#sender').text());
+        let receiver= JSON.parse($('#receiver').text());
+        let room_name =  JSON.parse($('#room_name').text());
+        console.log(receiver)
+        var socket = io.connect("http://localhost:3000");
+        (function privateChat() {
+            
+            socket.emit('private chat',{'user':sender,'room_name':room_name});
+        })();
+
+        socket.on("private chat",(data)=>{
+            console.log(data)
+        })
+
+        socket.on('disconnects',(msg)=>{
+            console.log('disconnects');
+            $('#online').empty();
+            
+        });
+
+        function chatFun(x){
+            
+            let name = $(`${x}`).text();
+            console.log('clicked',name)
+            
+        }
+
+        function subform(){
+            event.preventDefault()
+            console.log('subform clicked')
+            console.log($('#msg').val());
+            let msg = $('#msg').val();
+            obj = {'apple':2,'banena':1}
+            function getKeyByValue(object, value) {
+                return Object.keys(object).find(key => object[key] === value);
+              }
+            console.log(getKeyByValue(obj,2));
+            socket.emit('new message',{'msg':msg,'sender':'{{sender}}','receiver':'{{receiver}}','room_name':'{{room_name}}'})
+        }
+
+        socket.on('new message',(message)=>{
+            //document.write(data)
+            let value = message
+            var newtext = document.createTextNode(`<div class="msg_cotainer">
+                ${message.msg}
+                <span class="msg_time">8:40 AM, Today</span>
+            </div>`);
+            var para = $('#msgCon');
+           
+            para.append(newtext);
+            $.ajax({
+                method:'POST',
+                data:value,
+                url: "{% url 'createPrivateMsg'%}",
+                success:(response)=>{
+                    console.log(response)
+                        
+                },
+                error:(response)=>{
+                    console.log(response)
+                }
+
+
+            })
+            //$("#p1").append("HI");
+        })
+
+        function chatFun(x){
+            
+            let name = $(`#${x}`).text();
+            console.log('clicked',name)
+            window.location.pathname = `/private/${name}` + '/';
+            
+        }
+    </script>
+    
+{% endblock javascript%}

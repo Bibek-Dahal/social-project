@@ -1,0 +1,52 @@
+
+
+body {
+    background-color: #caf0f8;
+    font-family: 'Roboto', sans-serif
+}
+
+#container{
+    border: 3px solid rgb(255, 175, 128);
+    border-radius: 6px;
+    height: 60vh;
+    width: 60vh;
+    margin: auto;
+    padding-top : 10px;
+    overflow-y : auto;
+}
+
+.msg_left{
+    background-color: aliceblue;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 40vh;
+    float: left;
+    padding: 10px;
+    margin-top: 9px;
+    
+}
+
+.msg_right{
+    background-color: aliceblue;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 40vh;
+    float: right;
+    padding: 10px;
+    margin-top: 9px;
+
+    
+}
+
+#handle_form{
+    margin: auto;
+    
+    width: 60vh;
+    
+}
+
+nav{
+    background-color: #fd9e02;
+}
+
+

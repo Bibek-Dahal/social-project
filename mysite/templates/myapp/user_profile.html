@@ -1,0 +1,99 @@
+{% extends 'myapp/base.html'%}
+{% load static%}
+
+{% block title%}profile{% endblock title%}
+{% block container%}
+<div class="container-md ">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-11 ">
+            <!-- <img src="{{cover_pic.pic.url}}" class="img-fluid rounded-3" alt="coverpic"> -->
+            <img src="{{cover_pic.pic.url}}" class="img-fluid" alt="...">
+            <!-- <p>hello fah ahffh fhah </p> -->
+        </div>
+    </div>
+</div>
+    <br>
+<div class="container-md">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-12">
+            <div class="card ">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                         <h2>Photos</h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-around">
+                        {% for x in array%}
+                        <div class="col-4">
+                            <div class="card">
+                                
+                                    <img src="{{cover_pic.pic.url}}" class="rounded float-start img-fluid" alt="..." >
+                                
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                         <h2>Friends</h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-around">
+                        {% for x in array%}
+                        <div class="col-4">
+                            <div class="card">
+                                
+                                    <img src="{{cover_pic.pic.url}}" class="rounded float-start img-fluid" alt="..." >
+                                
+                            </div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="col-md-6 mt-1">
+            {% for post in posts%}
+                <div class="card-group">
+                    <div class="card">
+                        <div class="card-body">
+                            <img src="{{profile_pic.pic.url}}" alt="profile" class="rounded-circle"  width="50" height="50">
+                            <h5 class="card-title">{{post.title}}</h5>
+                            <p class="card-text"><small class="text-muted">{{post.created_at}}</small></p>
+                            <p class="card-text">{{post.description}}</p>
+                            
+                        </div>
+                        {% if post.pic%}
+                            <img src="{{post.pic.url}}" alt="image" >
+                        {%endif%}
+                        
+                        <div class="row">
+                            <div class="col">
+                                <h1>like</h1>
+                            </div>
+                            <div class="col">
+                                {% for p in post.show_comments%}
+                                <h1><a href="">{{p.user}} {{p.text}}</a></h1>
+                                {%endfor%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+</div>
+    
+    
+
+{% endblock%}

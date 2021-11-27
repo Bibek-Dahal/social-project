@@ -1,0 +1,136 @@
+{% extends 'myapp/base.html'%}
+{% load static%}
+
+
+{% block nav%}
+
+{% endblock nav%}
+
+
+{% block container%}
+     
+<h1 class = "text-center text-danger border border-danger p-3 mb-2 bg-gradient-danger text-success">Welcome To Room {{room_name}}</h1>
+<div  id="container">
+ 
+   
+</div>
+<div id = "handle_form">
+    <form action="" id = "form" class = "form-control">
+        <input type="text" id="input" class = "form-control">
+        <div class="d-flex justify-content-center">
+            <button type = "submit" id = "button" class = "btn btn-danger">Send</button>
+        </div>
+        
+    </form>
+</div>
+
+
+<div id = "message">
+    <ul id = "ul_msg"></ul>
+</div>
+
+{{room_name | json_script:"room_name"}}
+{{user_name | json_script:"user_name"}}
+
+
+<script>
+    var roomName = JSON.parse(document.getElementById("room_name").textContent);
+    var json_user_name = JSON.parse(document.getElementById("user_name").textContent);
+    console.log(roomName);
+    console.log(json_user_name);
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onopen = (e) =>{
+        fetch_msg();
+    }
+
+    function fetch_msg(){
+        chatSocket.send(JSON.stringify(
+            {    
+                'command' : 'chat_message'
+            }
+
+        ));
+    }
+    
+    var form = document.querySelector("#form");
+    form.addEventListener("submit",(e)=>{
+        var message = document.getElementById("input");
+        e.preventDefault();
+        if(message.value !== ' '){
+            console.log("button_clicked");
+            console.log(message.value);
+            chatSocket.send(JSON.stringify(
+                {   'command' : 'new_msg',
+                    'message':message.value,
+                    'user_name':json_user_name
+                }
+            ));
+
+            message.value = ' ';
+            console.log("hey message sent");  
+        }
+        
+       
+    });
+    
+
+    chatSocket.onmessage = (e) =>{
+        console.log('i am on on message');
+        console.log(e.data);
+        var obj_collection = JSON.parse(e.data)
+        if(obj_collection.message_type === 'new_msg'){
+            var item = document.createElement('div');
+            if(json_user_name ===obj_collection.user_name ){
+                item.className = "msg_right";
+
+            }
+
+            else{
+                item.className = "msg_left";
+
+            }
+
+            item.textContent = obj_collection.user_name + ": " + obj_collection.message;
+            document.querySelector("#container").appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+
+        }
+
+        else{
+            
+            console.log(JSON.parse(e.data));
+            for(x of obj_collection){
+                console.log(x.objs.message);
+
+    
+            var item = document.createElement('div');
+            if(json_user_name ===x.objs.user_name ){
+                item.className = "msg_right";
+
+            }
+
+            else{
+                item.className = "msg_left";
+
+            }
+
+            item.textContent = x.objs.user_name + ": " + x.objs.message;
+            document.querySelector("#container").appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+
+
+        }
+        }
+        
+    }
+</script>
+{% endblock container%}
+

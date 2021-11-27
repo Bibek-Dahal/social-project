@@ -1,0 +1,87 @@
+{% extends 'myapp/base.html'%}
+{% load static %}
+
+{% block container%}
+
+<div id='first'>
+    <h1>{{user}}</h1>
+    <img src="{% static 'images/friends.png'%}" alt="hello">
+    <img src="{% static 'images/notification.png'%}" alt="notification">
+    
+    <h2><a href="{% url 'pending_friend_requests'%}">Pending Request</a></h2>
+    <h2><a href="{% url 'profile' %}"> Profile pics </a></h2>
+
+    {{user_name | json_script:"user_name"}}
+
+    <div class="row">
+        <div class="col-sm-6">
+            {% for x in friends%}
+                {{x}}
+                <button><li id="{{x}}" onclick="chatFun('{{x}}')" >{{x}}</li></button>
+            {% endfor%}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col" id="online">
+
+        </div>
+    </div>
+   
+
+    
+    
+{% endblock container%}
+
+
+
+{% block javascript%}
+    
+    <script>
+        let user =$('h1').text()
+        var socket = io.connect("http://localhost:3000");
+        (function foo() {
+            
+            socket.emit('chat message',{'user':user});
+        })();
+
+        socket.on('chat message',function(msg){
+            //console.log(msg);
+            $('#online').empty();
+            for (obj in msg){
+                let x = msg[obj]
+                console.log(x[0].user)
+                
+                $('#online').append(`<div>${x[0].user}<div/>`);
+                console.log('heoo oooo oo')
+
+            }
+            //var item = document.createElement('li');
+            //item.textContent = msg;
+            //message.appendChild(item);
+            //console.log("hello guys");
+
+            socket.on('disconnects',(msg)=>{
+                console.log('disconnects');
+                $('#online').empty();
+                for (obj in msg){
+                    let x = msg[obj]
+                    console.log(x[0].user)
+                    $('#online').append(`<p>${x[0].user}<p/> `)
+
+                }
+            })
+
+        });
+
+        function chatFun(x){
+            
+            let name = $(`#${x}`).text();
+            console.log('clicked',name)
+            window.location.pathname = `/private/${name}` + '/';
+            
+        }
+    </script>
+ 
+{% endblock javascript%}

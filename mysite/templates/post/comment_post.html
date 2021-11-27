@@ -1,0 +1,14 @@
+{% extends 'myapp/base.html'%}
+{% load static%}
+
+{% block container%}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit">Comment</button>
+        <!-- <button type="submit"> Comment</button> -->
+    </form>
+
+    {{pk}}
+    {{name}}
+{% endblock container%}

@@ -1,0 +1,28 @@
+{% extends 'myapp/base.html'%}
+
+
+{% block nav%}
+
+{% endblock nav%}
+
+
+{% block container%}
+
+
+{%for image in images%}
+   <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+            {% if image.pic.url %}
+                <img src="{{image.pic.url}}" alt="image" >
+            {%endif%}
+        </div>
+    </div>
+{% endfor%}
+<input type="file" value = "upload">
+
+{% endblock container%}
